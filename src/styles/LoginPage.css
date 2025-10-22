@@ -1,0 +1,150 @@
+.login-page {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('../assets/images/bgImage.avif') 
+    no-repeat center center/cover;
+}
+
+.login-card {
+  /* position: relative; */
+  background: white;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-header {
+  position: absolute;
+  top:210px;
+  background: linear-gradient(to bottom, #2d2d2d, #000);
+  width: 100%;
+  max-width: 350px;
+  padding: 1.5rem;
+  text-align: center;
+  color: white;
+  font-weight: 600;
+  border-radius: 10px;
+  z-index: 999999999;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 2rem;
+  margin-top: 70px;
+}
+
+.login-input {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.login-input:focus {
+  border-color: #000;
+}
+
+.remember-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 0.5rem;
+}
+
+.remember-text {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background-color: #ccc;
+  border-radius: 22px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #000;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.login-button {
+  background: linear-gradient(to bottom, #2d2d2d, #000);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.8rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.login-button:hover {
+  opacity: 0.9;
+}
+
+.signup-text {
+  margin-top: 1.2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.signup-text span {
+  color: #ff4d6d;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.error-text {
+  color: red;
+  margin-bottom: 1rem;
+  text-align: center;
+}
