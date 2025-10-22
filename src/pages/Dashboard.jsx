@@ -1,30 +1,38 @@
-
+import React, { useState } from "react";
 import "../styles/Dashboard.css";
-import Sidebar from "../pages/Sidebar";
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Navbar from 'react-bootstrap/Navbar';
+import Sidebar from "./Sidebar";
+import Header from "../components/Header";
 
 const Dashboard = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const toggleSidebar = () => setIsOpen(!isOpen);
+
     return (
-        <Container fluid>
-            <Row>
-                <Col>
-                    <Navbar className="bg-body-tertiary">
-                        <Container>
-                            <Navbar.Brand href="#home">Navbar with text</Navbar.Brand>
-                            <Navbar.Toggle />
-                            <Navbar.Collapse className="justify-content-end">
-                                <Navbar.Text>
-                                    Signed in as: <a href="#login">Mark Otto</a>
-                                </Navbar.Text>
-                            </Navbar.Collapse>
-                        </Container>
-                    </Navbar>
-                </Col>
-            </Row>
-        </Container>
-    )
-}
+        <div className="dashboard-container">
+
+            {/* Main Content */}
+            <main className="main-content">
+                <Header toggleSidebar={toggleSidebar} />
+                <div style={{ display: 'flex' }}>
+                    <Sidebar barStatus={isOpen ? 'active-menu' : 'inactive-menu'} />
+                    <section className="content">
+                        <div className="card">
+                            <h3>New Appointments</h3>
+                            <hr />
+                        </div>
+                        <div className="card">
+                            <h3>All Appointments</h3>
+                            <hr />
+                        </div>
+                    </section>
+                </div>
+
+                <footer className="footer">
+                    © Ujaas Aroma Inc. All rights reserved 2026.
+                </footer>
+            </main>
+        </div>
+    );
+};
+
 export default Dashboard;

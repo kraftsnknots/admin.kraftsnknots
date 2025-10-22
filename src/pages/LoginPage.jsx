@@ -47,49 +47,51 @@ function LoginPage() {
 
   return (
     <div className="login-page">
-      <div className="login-card">
+      <div className='login-box'>
         <div className="login-header">
           <h3>Sign in</h3>
         </div>
-        <form className="login-form" onSubmit={handleSubmit}>
-          {error && <p className="error-text">{error}</p>}
+        <div className="login-card">
+          <form className="login-form" onSubmit={handleSubmit}>
+            {error && <p className="error-text">{error}</p>}
 
-          <input
-            type="email"
-            placeholder="Email" 
-            className="login-input"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+            <input
+              type="email"
+              placeholder="Email"
+              className="login-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-          <input
-            type="password"
-            placeholder="Password"
-            className="login-input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+            <input
+              type="password"
+              placeholder="Password"
+              className="login-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-          <div className="remember-row">
-            <label className="switch">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-              />
-              <span className="slider round"></span>
-            </label>
-            <span className="remember-text">Remember me</span>
-          </div>
+            <div className="remember-row">
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <span className="slider round"></span>
+              </label>
+              <span className="remember-text">Remember me</span>
+            </div>
 
-          <button type="submit" className="login-button" disabled={loading}>
-            {loading ? 'Loading...' : 'Sign in'}
-          </button>
+            <button type="submit" className="login-button" disabled={loading}>
+              {loading ? 'Loading...' : 'Sign in'}
+            </button>
 
-          <p className="signup-text">
-            Don’t have an account? <span onClick={() => navigate('/signup')}>Sign up</span>
-          </p>
-        </form>
+            <p className="forgot-text">
+              <span onClick={() => navigate('/signup')}>Forgot Password</span>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );

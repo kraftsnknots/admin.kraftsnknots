@@ -1,152 +1,53 @@
-/* Sidebar Container */
+/* Sidebar */
 .sidebar {
-  width: 260px;
-  min-height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1050;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-  transition: all 0.4s ease;
-  backdrop-filter: blur(8px);
-}
-
-/* Hidden on small screens by default */
-@media (max-width: 991px) {
-  .sidebar {
-    left: -280px;
-    background-color: rgba(255, 255, 255, 0.85);
-  }
-  .sidebar.open {
-    left: 0;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
-  }
-}
-
-/* Overlay when sidebar open */
-.sidebar-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 1049;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Toggle Button */
-.toggle-btn {
-  z-index: 1060;
-  border-radius: 8px;
-  background: linear-gradient(90deg, #00c6ff, #0072ff);
-  border: none;
-}
-
-/* Nav Links */
-.nav-link {
-  color: #6c757d;
-  font-weight: 500;
-  padding: 10px 12px;
-  transition: all 0.25s ease-in-out;
-  border-radius: 12px;
-}
-
-.nav-link i {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 6px;
-  font-size: 1rem;
-}
-
-.nav-link.active,
-.nav-link:hover {
-  color: #000;
-  background-color: #f8f9fa;
-  font-weight: 600;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-}
-
-.nav-link.active i {
-  background: linear-gradient(90deg, #00c6ff, #0072ff);
-  color: white;
-}
-
-/* Logo */
-.emoji-logo {
-  font-size: 1.6rem;
-}
-
-/* Help Card */
-.help-card {
-  background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
-  border-radius: 16px;
-  color: white;
-  box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
-  backdrop-filter: blur(6px);
-  transition: transform 0.2s ease;
-}
-
-.help-card:hover {
-  transform: translateY(-3px);
-}
-
-/* Help Icon */
-.help-icon {
-  background-color: rgba(255, 255, 255, 0.25);
-  border-radius: 50%;
-  padding: 8px;
-  display: inline-flex;
+  top:100px;
+  height:80vh;
+  width: 270px;
+  background-color: #fff;
+  border-right: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  z-index: 9;
 }
 
-/* Upgrade Button */
-.upgrade-btn {
-  background: linear-gradient(90deg, #00c6ff, #0072ff);
-  color: white;
-  border: none;
+.menu {
+  width: 100%;
+  padding-top: 25px;
+}
+
+.menu-item {
+  padding: 15px 25px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  column-gap: 20px;
+  font-size: 14px;
+  color: #333;
+  transition: background 0.3s;
+  margin: 0 10px;
   border-radius: 10px;
-  padding: 10px;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 4px 12px rgba(0, 114, 255, 0.25);
 }
 
-.upgrade-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 114, 255, 0.3);
-  opacity: 0.95;
+.menu-item:hover {
+  background-color: #f0f0f0;
 }
 
-.account-pages{
-    margin: 16px 0px 8px 16px;
-    font-family: Roboto, Helvetica, Arial, sans-serif;
-    font-size: 0.75rem;
-    line-height: 1.25;
-    letter-spacing: 0.03333em;
-    display: block;
-    opacity: 0.6;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: rgb(52, 71, 103);
-    font-weight: 700;
-    text-align: left;
+.menu-item.active {
+  background-color: #000;
+  color: #fff;
+  font-weight: 500;
+  /* border-radius: 10px; */
 }
-.menu-text{
-    margin: 0px;
-    font-family: Roboto, Helvetica, Arial, sans-serif;
-    font-weight: 400;
-    font-size: 0.875rem;
-    line-height: 0;
-    letter-spacing: 0.00938em;
-    display: block;
+
+@media only screen and (max-width: 600px) {
+  .inactive-menu {
+    display: none;
+  }
+  .active-menu {
+    position: absolute;
+    top: 85px;
+    height: 80vh;
+  }
 }
