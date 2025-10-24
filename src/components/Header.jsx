@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../features/authSlice";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
-import hamburgerMenu from "../assets/icons/hamburger-menu.png";
+import hamburgerMenu from "../assets/icons/burger-menu-left.svg";
+import cross from "../assets/icons/cross.png";
 import profilePicture from "../assets/icons/dummy_profile_picture.png";
 import Logo from "../assets/images/logo.png";
 import { FaUser, FaSignOutAlt } from "react-icons/fa";
@@ -12,6 +13,7 @@ import "./styles/header.css";
 
 const Header = ({ toggleSidebar }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // ✅ Track sidebar state
   const dropdownRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,8 +22,12 @@ const Header = ({ toggleSidebar }) => {
   const user = useSelector((state) => state.auth.user);
   const username = user?.name || user?.email || "Guest";
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
+  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
+
+  // ✅ Toggle both sidebar + icon state
+  const handleMenuClick = () => {
+    toggleSidebar(); // parent sidebar toggle
+    setIsMenuOpen((prev) => !prev); // icon swap
   };
 
   // Close dropdown when clicking outside
@@ -38,9 +44,9 @@ const Header = ({ toggleSidebar }) => {
   // Handle logout
   const handleLogout = async () => {
     try {
-      await signOut(auth); // Firebase logout
-      dispatch(logout()); // Redux clear
-      navigate("/"); // Redirect to login page
+      await signOut(auth);
+      dispatch(logout());
+      navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -48,8 +54,13 @@ const Header = ({ toggleSidebar }) => {
 
   return (
     <header className="topbar">
-      <button className="mobile-menu-btn" onClick={toggleSidebar}>
-        <img src={hamburgerMenu} alt="mobile-menu" className="mobile-menu" />
+      {/* ✅ Toggle menu button */}
+      <button className="mobile-menu-btn" onClick={handleMenuClick}>
+        <img
+          src={isMenuOpen ? cross : hamburgerMenu} // dynamically switch icon
+          alt="menu-toggle"
+          className="mobile-menu"
+        />
       </button>
 
       <div className="logo">

@@ -1,7 +1,14 @@
+// src/pages/ForgotPasswordPage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { httpsCallable } from "firebase/functions";
-import { functions } from "../config/firebase"; // ✅ now correctly exported
+import {
+  collection,
+  query,
+  where,
+  getDocs
+} from "firebase/firestore";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { db, auth } from "../config/firebase";
 import "../styles/LoginPage.css";
 import "../styles/ForgotPasswordPage.css";
 
@@ -13,50 +20,68 @@ function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(5);
 
+  // ✅ Email validation
   const validateEmail = (value) => /\S+@\S+\.\S+/.test(value);
 
+  // ✅ Form submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage("");
     setError("");
-    setCountdown(5);
+    setMessage("");
 
-    const trimmedEmail = email.trim();
-    if (!validateEmail(trimmedEmail)) {
-      setError("Invalid email format");
+    if (!email.trim()) {
+      setError("Email is required.");
       return;
     }
 
-    setLoading(true);
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
 
     try {
-      // ✅ Call your Cloud Function instead of querying Firestore
-      const sendEmail = httpsCallable(functions, "sendAdminPasswordResetEmail");
-      const result = await sendEmail({ email: trimmedEmail }); // ⚠️ Pass as object
-      console.log("Function response:", result.data);
-      alert("Password reset email sent!");
+      setLoading(true);
 
-      if (result.data?.success) {
-        setMessage("Password reset email sent! Redirecting to login...");
-      } else {
-        setError("Failed to send password reset email");
+      // 🔍 Step 1: Check if email exists in Firestore and is admin
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("email", "==", email));
+      const snapshot = await getDocs(q);
+
+      if (snapshot.empty) {
+        setError("No user found with this email.");
+        setLoading(false);
+        return;
       }
+
+      const userData = snapshot.docs[0].data();
+
+      if (userData.admin !== 1) {
+        setError("Access denied. Only admin users can reset password here.");
+        setLoading(false);
+        return;
+      }
+
+      // ✉️ Step 2: Send password reset email
+      await sendPasswordResetEmail(auth, email);
+      setMessage("Password reset email sent successfully! Redirecting in ");
     } catch (err) {
-      console.error("Error sending reset email:", err);
-      setError(
-        err.message ||
-        "Failed to send reset email. Please try again or contact support."
-      );
+      console.error("Password reset error:", err);
+      setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  // ⏳ Countdown & redirect logic
+  // ⏳ Countdown + redirect logic
   useEffect(() => {
     if (message) {
-      const timer = setInterval(() => setCountdown((prev) => prev - 1), 1000);
-      const redirectTimer = setTimeout(() => navigate("/"), 5000);
+      const timer = setInterval(() => {
+        setCountdown((prev) => (prev > 0 ? prev - 1 : 0));
+      }, 1000);
+
+      const redirectTimer = setTimeout(() => {
+        navigate("/");
+      }, 5000);
 
       return () => {
         clearInterval(timer);
@@ -76,7 +101,7 @@ function ForgotPasswordPage() {
             {error && <p className="error-text">{error}</p>}
             {message && (
               <p className="success-text">
-                {message.split("Redirecting")[0]}
+                {message}
                 <span className="countdown"> {countdown}</span>...
               </p>
             )}
