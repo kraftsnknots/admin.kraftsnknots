@@ -4,11 +4,14 @@ import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../config/firebase";
+import Footer from "../components/Footer";
+import MoneyCardSkeleton from "../components/MoneyCardSkeleton";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-
   const [totalUsers, setTotalUsers] = useState(0);
   const [adminUsers, setAdminUsers] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
@@ -79,131 +82,152 @@ const Dashboard = () => {
     };
   }, []);
 
+
+
   return (
     <div className="dashboard-container">
-      <main className="main-content">
-        <Header toggleSidebar={toggleSidebar} />
-        <div style={{ display: "flex" }}>
-          <Sidebar barStatus={isOpen ? "active-menu" : "inactive-menu"} />
-          <section className="content">
+      <Header toggleSidebar={toggleSidebar} />
+      <div className="sidebar-mainsection">
+        <Sidebar barStatus={isOpen ? "active-menu" : ""} dashboard="active" />
+        <section className="mainsection">
+          <div className="section">
             {/* 🛡️ Admin Users */}
-            <div className="money-card">
-              <div className="money-sub-card">
-                <div className="money-info">
-                  <p className="money-title">Admin Users</p>
-                  <h2 className="money-amount">
-                    {loading ? "..." : adminUsers}
-                  </h2>
+            {loading ? (
+              <MoneyCardSkeleton />
+            ) : (
+              <div className="money-card">
+                <div className="money-sub-card">
+                  <div className="money-info">
+                    <p className="money-title">Admin Users</p>
+                    <h2 className="money-amount">
+                      {loading ? "..." : adminUsers}
+                    </h2>
+                  </div>
+                  <div className="money-icon">
+                    <i className="fa-solid fa-user-shield"></i>
+                  </div>
                 </div>
-                <div className="money-icon">
-                  <i className="fa-solid fa-user-shield"></i>
-                </div>
+                <p className="money-change">Verified admins</p>
               </div>
-              <p className="money-change">Verified admins</p>
-            </div>
-
+            )}
             {/* 🧍 Total Users */}
-            <div className="money-card">
-              <div className="money-sub-card">
-                <div className="money-info">
-                  <p className="money-title">Total Users</p>
-                  <h2 className="money-amount">
-                    {loading ? "..." : totalUsers}
-                  </h2>
+            {loading ? (
+              <MoneyCardSkeleton />
+            ) : (
+              <div className="money-card" onClick={() => navigate("/users")}>
+                <div className="money-sub-card">
+                  <div className="money-info">
+                    <p className="money-title">Total Users</p>
+                    <h2 className="money-amount">
+                      {loading ? "..." : totalUsers}
+                    </h2>
+                  </div>
+                  <div className="money-icon">
+                    <i className="fa-solid fa-users"></i>
+                  </div>
                 </div>
-                <div className="money-icon">
-                  <i className="fa-solid fa-users"></i>
-                </div>
+                <p className="money-change">Registered users</p>
               </div>
-              <p className="money-change">Registered users</p>
-            </div>
-
+            )}
             {/* 🎁 Total Products */}
-            <div className="money-card">
-              <div className="money-sub-card">
-                <div className="money-info">
-                  <p className="money-title">Total Products</p>
-                  <h2 className="money-amount">
-                    {loading ? "..." : totalProducts}
-                  </h2>
+            {loading ? (
+              <MoneyCardSkeleton />
+            ) : (
+              <div className="money-card" onClick={() => navigate("/products")}>
+                <div className="money-sub-card">
+                  <div className="money-info">
+                    <p className="money-title">Total Products</p>
+                    <h2 className="money-amount">
+                      {loading ? "..." : totalProducts}
+                    </h2>
+                  </div>
+                  <div className="money-icon">
+                    <i className="fa-solid fa-gift"></i>
+                  </div>
                 </div>
-                <div className="money-icon">
-                  <i className="fa-solid fa-gift"></i>
-                </div>
+                <p className="money-change">All handmade products</p>
               </div>
-              <p className="money-change">All handmade products</p>
-            </div>
-
+            )}
             {/* ✅ Success Orders */}
-            <div className="money-card">
-              <div className="money-sub-card">
-                <div className="money-info">
-                  <p className="money-title">Success Orders</p>
-                  <h2 className="money-amount">
-                    {loading ? "..." : successOrders}
-                  </h2>
+            {loading ? (
+              <MoneyCardSkeleton />
+            ) : (
+              <div className="money-card">
+                <div className="money-sub-card">
+                  <div className="money-info">
+                    <p className="money-title">Success Orders</p>
+                    <h2 className="money-amount">
+                      {loading ? "..." : successOrders}
+                    </h2>
+                  </div>
+                  <div className="money-icon">
+                    <i className="fa-solid fa-check-circle"></i>
+                  </div>
                 </div>
-                <div className="money-icon">
-                  <i className="fa-solid fa-check-circle"></i>
-                </div>
+                <p className="money-change">Completed successfully</p>
               </div>
-              <p className="money-change">Completed successfully</p>
-            </div>
-
+            )}
             {/* ❌ Failed Orders */}
-            <div className="money-card">
-              <div className="money-sub-card">
-                <div className="money-info">
-                  <p className="money-title">Failed Orders</p>
-                  <h2 className="money-amount">
-                    {loading ? "..." : failedOrders}
-                  </h2>
+            {loading ? (
+              <MoneyCardSkeleton />
+            ) : (
+              <div className="money-card">
+                <div className="money-sub-card">
+                  <div className="money-info">
+                    <p className="money-title">Failed Orders</p>
+                    <h2 className="money-amount">
+                      {loading ? "..." : failedOrders}
+                    </h2>
+                  </div>
+                  <div className="money-icon">
+                    <i className="fa-solid fa-xmark-circle"></i>
+                  </div>
                 </div>
-                <div className="money-icon">
-                  <i className="fa-solid fa-xmark-circle"></i>
-                </div>
+                <p className="money-change">Payment or delivery issues</p>
               </div>
-              <p className="money-change">Payment or delivery issues</p>
-            </div>
-
+            )}
             {/* 🎟️ Discount Codes */}
-            <div className="money-card">
-              <div className="money-sub-card">
-                <div className="money-info">
-                  <p className="money-title">Discount Codes</p>
-                  <h2 className="money-amount">
-                    {loading ? "..." : discountCodes}
-                  </h2>
+            {loading ? (
+              <MoneyCardSkeleton />
+            ) : (
+              <div className="money-card">
+                <div className="money-sub-card">
+                  <div className="money-info">
+                    <p className="money-title">Discount Codes</p>
+                    <h2 className="money-amount">
+                      {loading ? "..." : discountCodes}
+                    </h2>
+                  </div>
+                  <div className="money-icon">
+                    <i className="fa-solid fa-tags"></i>
+                  </div>
                 </div>
-                <div className="money-icon">
-                  <i className="fa-solid fa-tags"></i>
-                </div>
+                <p className="money-change">Active promotional codes</p>
               </div>
-              <p className="money-change">Active promotional codes</p>
-            </div>
-
+            )}
             {/* 📩 Mobile Queries */}
-            <div className="money-card">
-              <div className="money-sub-card">
-                <div className="money-info">
-                  <p className="money-title">Customer Queries</p>
-                  <h2 className="money-amount">
-                    {loading ? "..." : mobileQueries}
-                  </h2>
+            {loading ? (
+              <MoneyCardSkeleton />
+            ) : (
+              <div className="money-card">
+                <div className="money-sub-card">
+                  <div className="money-info">
+                    <p className="money-title">Customer Queries</p>
+                    <h2 className="money-amount">
+                      {loading ? "..." : mobileQueries}
+                    </h2>
+                  </div>
+                  <div className="money-icon">
+                    <i className="fa-solid fa-envelope"></i>
+                  </div>
                 </div>
-                <div className="money-icon">
-                  <i className="fa-solid fa-envelope"></i>
-                </div>
+                <p className="money-change">Messages from app</p>
               </div>
-              <p className="money-change">Messages from app</p>
-            </div>
-          </section>
-        </div>
-
-        <footer className="footer">
-          © Ujaas Aroma Inc. All rights reserved 2026.
-        </footer>
-      </main>
+            )}
+          </div>
+        </section>
+      </div>
+      <Footer />
     </div>
   );
 };

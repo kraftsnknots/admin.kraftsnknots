@@ -7,35 +7,45 @@
 
 .dashboard-container {
     display: flex;
-    height: 100vh;
-    background-color: #f9f9fb;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: #eee;
     color: #222;
+    height: 100vh;
 }
 
-/* Main Area */
-.main-content {
-    flex: 1;
+.sidebar-mainsection {
     display: flex;
-    flex-direction: column;
-    position: relative;
-    background-color: #fafafa;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 }
 
 /* Content */
-.content {
-    width: 100%;
-    display: flex;
-    padding: 20px 20px;
-    background-color: #fafafa;
+.mainsection {
+    width: calc(100% - 270px);
+    display: flex; 
+    padding: 10px;
+    background-color: #eee;
     flex-wrap: wrap;
     gap: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    height: 300px;
+    height: 100%;
 }
 
+.section {
+    width: 100%;
+    height: 280px;
+    max-height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    column-gap: 25px;
+    flex-wrap: wrap;
+    /* box-shadow: rgba(0, 0, 0, 0.1) 0px 60px 40px -7px; */
+    background-color: transparent;
+    overflow-y: auto;
+}
 
 /* Card container */
 .money-card {
@@ -45,8 +55,10 @@
     padding: 20px 25px;
     width: 100%;
     max-width: 305px;
-    height: 110px;
+    height: 115px;
     transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 }
 
 /* Hover animation */
@@ -107,22 +119,13 @@
     align-items: center;
 }
 
-/* Footer */
-.footer {
-    /* position: absolute; */
-    bottom: 0;
-    background-color: #fff;
-    text-align: center;
-    font-size: 13px;
-    color: #777;
-    padding: 15px;
-    border-top: 1px solid #eee;
-    width: 100%;
-}
-
 @media only screen and (max-width: 800px) {
     .money-card {
         width: 100%;
         max-width: 100%;
+    }
+
+    .content {
+        height: 100%;
     }
 }

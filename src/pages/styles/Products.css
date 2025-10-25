@@ -1,24 +1,53 @@
-.products-container {
-  padding: 25px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   font-family: "Inter", sans-serif;
-  background-color: #f9fafc;
-  min-height: 100vh;
+}
+
+.products-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: #eee;
+  color: #222;
+  height: 100vh;
+}
+
+.tables-section {
+  height: auto;
+  flex-direction: column;
+  row-gap: 20px;
+  flex-wrap: wrap;
+  background-color: transparent;
+  overflow-x: auto;
 }
 
 .top-bar {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 15px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  width: 100%;
 }
 
 .top-bar input {
-  flex: 1;
+  /* flex: 1; */
   padding: 10px 15px;
   border: 1px solid #ddd;
   border-radius: 10px;
   font-size: 14px;
   outline: none;
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+  width: 30%;
+}
+
+.filter-sort {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  column-gap: 20px;
 }
 
 .top-bar select {
@@ -27,15 +56,17 @@
   border: 1px solid #ddd;
   background: #fff;
   cursor: pointer;
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+  width: 50%;
 }
 
 .product-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
   background-color: #fff;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 }
 
 .product-table th,
@@ -135,6 +166,7 @@ tr:hover {
   font-size: 13px;
   color: #666;
   margin: 6px 0;
+  overflow-y: auto;
 }
 
 .discount {

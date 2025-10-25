@@ -10,6 +10,9 @@ import { db } from "../config/firebase";
 import "./styles/Products.css";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
+import Footer from "../components/Footer";
+import ProductSkeleton from "../components/ProductSkeleton";
+
 
 
 export default function Products() {
@@ -65,7 +68,11 @@ export default function Products() {
     // 🔍 Filtering + Sorting
     const filtered = products
         .filter((p) =>
-            p.title.toLowerCase().includes(search.toLowerCase().trim())
+            p.title.toLowerCase().includes(search.toLowerCase().trim()) ||
+            p.ribbon.toLowerCase().includes(search.toLowerCase().trim()) ||
+            p.createdAt.toLowerCase().includes(search.toLowerCase().trim()) ||
+            p.price.toLowerCase().includes(search.toLowerCase().trim()) ||
+            p.discountPrice.toLowerCase().includes(search.toLowerCase().trim())
         )
         .filter((p) => {
             if (filter === "In Stock") return p.ribbon !== "Out of Stock";
@@ -87,40 +94,53 @@ export default function Products() {
             }
         });
 
-    if (loading) return <div className="loading">Loading products...</div>;
+    if (loading) {
+        return (
+            <div className="loading-shimmer">
+                {[...Array(8)].map((_, i) => (
+                    <div key={i} style={{ marginBottom: "10px" }}>
+                        <ProductSkeleton />
+                    </div>
+                ))}
+            </div>
+        );
+    }
+
 
     return (
         <div className="products-container">
-            <main className="main-content">
-                <Header toggleSidebar={toggleSidebar} />
-                <div style={{ display: "flex" }}>
-                    <Sidebar barStatus={isOpen ? "active-menu" : "inactive-menu"} />
-                    <div style={{display:'flex', flexDirection:'column'}}>
+            <Header toggleSidebar={toggleSidebar} />
+            <div className="sidebar-mainsection">
+                <Sidebar barStatus={isOpen ? "active-menu" : ""} products="active" />
+                <section className="mainsection">
+                    <div className="section tables-section">
                         <div className="top-bar">
                             <input
                                 type="text"
-                                placeholder="🔍 Search products..."
+                                placeholder="🔍 Search products by name, ribbon, price, date..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
-                            <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-                                <option>All</option>
-                                <option>In Stock</option>
-                                <option>Out of Stock</option>
-                            </select>
-                            <select value={sort} onChange={(e) => setSort(e.target.value)}>
-                                <option>Most Relevant</option>
-                                <option>Price Lowest First</option>
-                                <option>Price Highest First</option>
-                                <option>Ranking Lowest First</option>
-                                <option>Ranking Highest First</option>
-                            </select>
+                            <div className="filter-sort">
+                                <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+                                    <option>All</option>
+                                    <option>In Stock</option>
+                                    <option>Out of Stock</option>
+                                </select>
+                                <select value={sort} onChange={(e) => setSort(e.target.value)}>
+                                    <option>Most Relevant</option>
+                                    <option>Price Lowest First</option>
+                                    <option>Price Highest First</option>
+                                    <option>Ranking Lowest First</option>
+                                    <option>Ranking Highest First</option>
+                                </select>
+                            </div>
                         </div>
 
                         <table className="product-table">
                             <thead>
                                 <tr>
-                                    <th>No.</th>
+                                    <th></th>
                                     <th>Product</th>
                                     <th>Ribbon</th>
                                     <th>Weight</th>
@@ -206,8 +226,9 @@ export default function Products() {
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </main>
+                </section>
+            </div>
+            <Footer />
         </div>
     );
 }
