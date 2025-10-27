@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
+// features/authSlice.js
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   user: null,
@@ -8,7 +9,7 @@ const initialState = {
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     loginStart(state) {
@@ -24,7 +25,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
       state.isLoggedIn = false;
-      state.user = null; 
+      state.user = null;
     },
     logout(state) {
       state.user = null;
@@ -34,6 +35,16 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout } = authSlice.actions;
+export const { loginStart, loginSuccess, loginFailure, logout } =
+  authSlice.actions;
+
+// ✅ Custom thunk to handle full logout flow
+export const performLogout = () => async (dispatch) => {
+  try {
+    dispatch(logout()); // clear auth state
+  } catch (error) {
+    console.error("Error during logout cleanup:", error);
+  }
+};
 
 export default authSlice.reducer;

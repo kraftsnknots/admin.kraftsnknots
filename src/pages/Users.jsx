@@ -14,6 +14,7 @@ import Footer from "../components/Footer";
 import ProductSkeleton from "../components/ProductSkeleton"; // shimmer component
 import dummy_picture from "../assets/icons/dummy_profile_picture.png"
 import { useLocation } from "react-router-dom";
+import { useSidebar } from "../context/SidebarContext"
 
 export default function Users() {
     const location = useLocation();
@@ -22,12 +23,13 @@ export default function Users() {
     const [users, setUsers] = useState([]);
     const [hovered, setHovered] = useState(null);
     const [search, setSearch] = useState("");
-    const[filter, setFilter] = useState(
+    const [filter, setFilter] = useState(
         userType === "admins" ? "Admins" : userType === "clients" ? "Clients" : "All"
     );
 
     const [sort, setSort] = useState("Most Relevant");
     const [loading, setLoading] = useState(true);
+    const { collapsed } = useSidebar();
 
     const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -113,106 +115,104 @@ export default function Users() {
     return (
         <div className="products-container">
             <Header toggleSidebar={toggleSidebar} />
-            <div className="sidebar-mainsection">
-                <Sidebar barStatus={isOpen ? "active-menu" : ""} users="active" />
-                <section className="mainsection">
-                    <div className="section tables-section">
-                        <div className="top-bar">
-                            <input
-                                type="text"
-                                placeholder="🔍 Search users by name, email, phone"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                            <div className="filter-sort" style={{width:'20%'}}>
-                                <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-                                    <option>All</option>
-                                    <option>Admins</option>
-                                    <option>Clients</option>
-                                </select>
-                                <select value={sort} onChange={(e) => setSort(e.target.value)}>
-                                    <option>Most Relevant</option>
-                                    <option>Name A-Z</option>
-                                    <option>Name Z-A</option>
-                                    <option>Newest First</option>
-                                    <option>Oldest First</option>
-                                </select>
-                            </div>
+            <Sidebar barStatus={isOpen ? "active-menu" : "inactive-menu"} users="active" />
+            <section className={`mainsection ${collapsed ? "collapsed" : ""}`}>
+                <div className="tables-section">
+                    <div className="top-bar">
+                        <input
+                            type="text"
+                            placeholder="🔍 Search users by name, email, phone"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                        <div className="filter-sort">
+                            <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+                                <option>All</option>
+                                <option>Admins</option>
+                                <option>Clients</option>
+                            </select>
+                            <select value={sort} onChange={(e) => setSort(e.target.value)}>
+                                <option>Most Relevant</option>
+                                <option>Name A-Z</option>
+                                <option>Name Z-A</option>
+                                <option>Newest First</option>
+                                <option>Oldest First</option>
+                            </select>
                         </div>
-
-                        <table className="product-table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>User</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Admin</th>
-                                    <th>Created</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filtered.map((u, i) => (
-                                    <React.Fragment key={u.id}>
-                                        <tr
-                                            onMouseEnter={() => setHovered(u.id)}
-                                            onMouseLeave={() => setHovered(null)}
-                                        >
-                                            <td>{String(i + 1).padStart(2, "0")}</td>
-                                            <td>
-                                                <div className="product-name-cell">
-                                                    <img
-                                                        src={u.photoURL || dummy_picture}
-                                                        alt={u.name}
-                                                        style={{
-                                                            width: 30,
-                                                            height: 30,
-                                                            borderRadius: "50%",
-                                                            objectFit: "cover",
-                                                        }}
-                                                    />
-                                                    <span>{u.name}</span>
-                                                </div>
-                                            </td>
-                                            <td>{u.email}</td>
-                                            <td>{u.phone}</td>
-                                            <td>
-                                                <span className={`status ${u.admin === "Yes" ? "available" : "out"}`}>
-                                                    {u.admin}
-                                                </span>
-                                            </td>
-
-                                            <td>{u.createdAt}</td>
-                                            <td className="actions">
-                                                <button onClick={() => handleEdit(u.id)}>✏️</button>
-                                                <button onClick={() => handleDelete(u.id)}>🗑️</button>
-                                            </td>
-                                        </tr>
-
-                                        {/* Hover Card */}
-                                        {hovered === u.id && (
-                                            <div className="hover-card-cell">
-                                                <div className="hover-card">
-                                                    <img
-                                                        src={u.photoURL || dummy_picture}
-                                                        alt={u.name}
-                                                    />
-                                                    <h4>{u.name}</h4>
-                                                    <p><strong>Email:</strong> {u.email}</p>
-                                                    <p><strong>Phone:</strong> {u.phone}</p>
-                                                    <p><strong>Admin:</strong> {u.admin}</p>
-                                                    <p><strong>Created:</strong> {u.createdAt}</p>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </React.Fragment>
-                                ))}
-                            </tbody>
-                        </table>
                     </div>
-                </section>
-            </div>
+
+                    <table className="product-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Admin</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filtered.map((u, i) => (
+                                <React.Fragment key={u.id}>
+                                    <tr
+                                        onMouseEnter={() => setHovered(u.id)}
+                                        onMouseLeave={() => setHovered(null)}
+                                    >
+                                        <td>{String(i + 1).padStart(2, "0")}</td>
+                                        <td>
+                                            <div className="product-name-cell">
+                                                <img
+                                                    src={u.photoURL || dummy_picture}
+                                                    alt={u.name}
+                                                    style={{
+                                                        width: 30,
+                                                        height: 30,
+                                                        borderRadius: "50%",
+                                                        objectFit: "cover",
+                                                    }}
+                                                />
+                                                <span>{u.name}</span>
+                                            </div>
+                                        </td>
+                                        <td>{u.email}</td>
+                                        <td>{u.phone}</td>
+                                        <td>
+                                            <span className={`status ${u.admin === "Yes" ? "available" : "out"}`}>
+                                                {u.admin}
+                                            </span>
+                                        </td>
+
+                                        <td>{u.createdAt}</td>
+                                        <td className="actions">
+                                            <button onClick={() => handleEdit(u.id)}>✏️</button>
+                                            <button onClick={() => handleDelete(u.id)}>🗑️</button>
+                                        </td>
+                                    </tr>
+
+                                    {/* Hover Card */}
+                                    {hovered === u.id && (
+                                        <div className="hover-card-cell">
+                                            <div className="hover-card">
+                                                <img
+                                                    src={u.photoURL || dummy_picture}
+                                                    alt={u.name}
+                                                />
+                                                <h4>{u.name}</h4>
+                                                <p><strong>Email:</strong> {u.email}</p>
+                                                <p><strong>Phone:</strong> {u.phone}</p>
+                                                <p><strong>Admin:</strong> {u.admin}</p>
+                                                <p><strong>Created:</strong> {u.createdAt}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
             <Footer />
         </div>
     );

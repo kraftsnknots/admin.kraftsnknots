@@ -1,5 +1,5 @@
 import "./styles/Footer.css"
-import { logout } from "../features/authSlice";
+import { performLogout } from "../features/authSlice";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ const Footer = () => {
     const handleLogout = async () => {
         try {
             await signOut(auth);
-            dispatch(logout());
+            dispatch(performLogout());
             navigate("/");
         } catch (error) {
             console.error("Logout error:", error);

@@ -1,5 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { combineReducers } from 'redux';
+// store.js
+import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers } from "redux";
 import {
   persistStore,
   persistReducer,
@@ -9,20 +10,21 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from 'redux-persist';
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
-import storage from 'redux-persist/lib/storage'; // uses localStorage for web
-
-import authReducer from './features/authSlice'; // create this slice next
+import authReducer from "./features/authSlice";
+import dashboardReducer from "./features/dashboardSlice"; // ✅ new
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   version: 1,
   storage,
 };
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  dashboard: dashboardReducer, // ✅ added
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

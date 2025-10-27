@@ -69,7 +69,7 @@ function LoginPage() {
 
             <input
               type="email"
-              placeholder="Email"
+              placeholder="user@domain.com"
               className="login-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -77,7 +77,7 @@ function LoginPage() {
 
             <input
               type="password"
-              placeholder="Password"
+              placeholder="E5tpxxbyz1"
               className="login-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -92,7 +92,7 @@ function LoginPage() {
                 />
                 <span className="slider round"></span>
               </label>
-              <span className="remember-text">Remember me</span>
+              <span className="remember-text" style={{ color: rememberMe ? '#000' : '#ccc' }}>Remember me</span>
             </div>
 
             <button type="submit" className="login-button" disabled={loading}>

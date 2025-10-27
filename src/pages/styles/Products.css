@@ -21,6 +21,7 @@
   flex-wrap: wrap;
   background-color: transparent;
   overflow-x: auto;
+  width: 100%;
 }
 
 .top-bar {
@@ -39,7 +40,7 @@
   border-radius: 10px;
   font-size: 14px;
   outline: none;
-  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
   width: 30%;
 }
 
@@ -48,6 +49,7 @@
   justify-content: flex-end;
   align-items: center;
   column-gap: 20px;
+  width: 25%;
 }
 
 .top-bar select {
@@ -56,8 +58,12 @@
   border: 1px solid #ddd;
   background: #fff;
   cursor: pointer;
-  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
   width: 50%;
+}
+
+.top-bar select::-moz-focus-inner {
+  background-color: #2f9d63;
 }
 
 .product-table {
@@ -66,7 +72,6 @@
   background-color: #fff;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 }
 
 .product-table th,
@@ -113,6 +118,12 @@
   color: #d93025;
 }
 
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .actions button {
   border: none;
   background: transparent;
@@ -135,8 +146,8 @@ tr:hover {
 /* Hover card styling */
 .hover-card-cell {
   position: absolute;
-  right: 440px;
-  top: 150px;
+  right: 50%;
+  top: 100px;
 }
 
 .hover-card {
@@ -185,4 +196,225 @@ tr:hover {
   padding: 50px;
   font-size: 16px;
   color: #444;
+}
+
+/* 🌌 Glassy Edit Modal Inspired by Event Registration */
+.glass-form {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(20px) saturate(180%);
+  /* border: 1px solid rgba(255, 255, 255, 0.15); */
+  border-radius: 18px;
+  box-shadow: 0 8px 40px rgba(255, 255, 255, 0.4);
+  color: #fff;
+  padding: 30px 40px;
+  max-width: 1000px;
+  width: 90%;
+  animation: fadeIn 0.4s ease;
+}
+
+.glass-form h2 {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 5px;
+}
+
+.glass-form p {
+  text-align: center;
+  color: #000;
+  font-size: 13px;
+  margin-bottom: 25px;
+}
+
+/* Icon + Input Group */
+.input-group {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.input-group i {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #000;
+  font-size: 15px;
+}
+
+.input-group input,
+.input-group textarea {
+  width: 100%;
+  padding: 10px 14px 10px 40px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #000;
+  font-size: 14px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+  border-color: #4ac1f7;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.input-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Two column layout for prices */
+.two-col {
+  display: flex;
+  gap: 10px;
+}
+
+/* Drop Zone */
+.drop-zone {
+  border: 2px dashed rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  padding: 25px;
+  text-align: center;
+  color: #000;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  transition: 0.25s;
+  cursor: pointer;
+}
+
+.drop-zone:hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Image grid */
+.image-preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.preview-item img {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.preview-item {
+  position: relative;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.preview-item:hover {
+  transform: scale(1.03);
+}
+
+.preview-item button {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: rgba(255, 0, 0, 0.9);
+  border: none;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(255, 0, 0, 0.5);
+  z-index: 5;
+  transition: all 0.2s ease;
+}
+
+.preview-item button:hover {
+  background: #ff4747;
+  transform: scale(1.15);
+  box-shadow: 0 0 12px rgba(255, 0, 0, 0.8);
+}
+
+
+
+/* Buttons */
+.edit-actions {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+
+.save-btn {
+  flex: 1;
+  background: linear-gradient(90deg, #b02121, #ed6d6d);
+  color: #fff;
+  border: none;
+  padding: 12px 0;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(109, 213, 237, 0.4);
+}
+
+.cancel-btn {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  padding: 12px 0;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.cancel-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.2);
+  color: #000;
+}
+
+/* Smooth entrance */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+
+@media only screen and (max-width: 800px) {
+  .top-bar {
+    flex-direction: column-reverse;
+  }
+
+  .top-bar input {
+    width: 100%;
+  }
+
+  .filter-sort {
+    width: 100%;
+  }
 }

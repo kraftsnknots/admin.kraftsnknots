@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../features/authSlice";
+import { performLogout } from "../features/authSlice";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
 import hamburgerMenu from "../assets/icons/burger-menu-left.svg";
@@ -45,7 +45,7 @@ const Header = ({ toggleSidebar }) => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      dispatch(logout());
+      dispatch(performLogout());
       navigate("/");
     } catch (error) {
       console.error("Logout error:", error);

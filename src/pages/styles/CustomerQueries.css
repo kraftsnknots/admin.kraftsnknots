@@ -188,3 +188,89 @@
 .query-details-table tr:hover {
   background-color: #f9f9f9;
 }
+
+.query-del-btn {
+  width: 125px;
+}
+
+.query-view-btn {
+  border: none;
+  background-color: transparent;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.query-view-btn img {
+  width: 22px;
+}
+
+@media only screen and (max-width: 800px) {
+  .filter-sort-queries select {
+    width: 100%;
+  }
+
+  .query-del-btn {
+    width: 170px;
+  }
+}
+
+/* ---------- RESPONSIVE FIXES ---------- */
+@media (max-width: 1024px) {
+  .modal-content {
+    max-width: 70%;
+    padding: 20px;
+  }
+
+  .section-left,
+  .section-right {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    max-width: 90%;
+    padding: 20px;
+  }
+
+  .section-modal {
+    flex-direction: column;
+    row-gap: 15px;
+  }
+
+  .section-left,
+  .section-right {
+    width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 8px 20px;
+  }
+
+  .button-86 {
+    float: none;
+    align-self: center;
+    margin-top: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 95%;
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .section-left,
+  .section-right {
+    padding: 10px;
+  }
+
+  .query-details-table td {
+    font-size: 13px;
+    padding: 6px 4px;
+  }
+
+  .button-86 {
+    width: 90%;
+    font-size: 14px;
+    height: 40px;
+  }
+}
