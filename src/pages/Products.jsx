@@ -24,8 +24,11 @@ import { useSidebar } from "../context/SidebarContext";
 import Swal from "sweetalert2";
 import Edit from "../assets/icons/edit.png";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import TopBar from "../components/TopBar";
+import { useNavigate } from "react-router-dom";
 
 export default function Products() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [products, setProducts] = useState([]);
   const [hovered, setHovered] = useState(null);
@@ -306,34 +309,21 @@ export default function Products() {
       />
       <section className={`mainsection ${collapsed ? "collapsed" : ""}`}>
         <div className="tables-section">
-          <div className="top-bar">
-            <input
-              type="text"
-              placeholder="🔍 Search products..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <div className="filter-sort">
-              <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-                <option>All</option>
-                <option>In Stock</option>
-                <option>Out of Stock</option>
-              </select>
-              <select value={sort} onChange={(e) => setSort(e.target.value)}>
-                <option>Most Relevant</option>
-                <option>Price Lowest First</option>
-                <option>Price Highest First</option>
-              </select>
-              {selectedIds.length > 0 && (
-                <button
-                  className="delete-selected-btn"
-                  onClick={() => handleDelete(selectedIds)}
-                >
-                  <i className="fa-solid fa-trash"></i> Delete ({selectedIds.length})
-                </button>
-              )}
-            </div>
-          </div>
+          <TopBar
+            search={search}
+            inpchange={(e) => setSearch(e.target.value)}
+            filter={filter}
+            filchange={(e) => setFilter(e.target.value)}
+            sort={sort}
+            selchange={(e) => setSort(e.target.value)}
+            delete={() => handleDelete(selectedIds)}
+            length={selectedIds.length}
+            addwidth="20%"
+            delwidth="40%"
+            data={selectedIds.length}
+            add={() => navigate("/products-add")}
+            page="products"
+          />
 
           <table className="product-table">
             <thead>
@@ -442,123 +432,137 @@ export default function Products() {
             <div className="edit-modal-grid">
               {/* Title */}
               <div className="two-col">
-                <div className="input-group" onMouseEnter={() => setToolTip("Title")} onMouseLeave={() => setToolTip(null)}>
-                  <i className="fa-solid fa-box"></i>
-                  <input
-                    type="text"
-                    placeholder="Product Title"
-                    value={editingProduct.title}
-                    onChange={(e) =>
-                      setEditingProduct({ ...editingProduct, title: e.target.value })
-                    }
-                  />
+                <div className="input-tootip">
+                  <div className="input-group" onMouseEnter={() => setToolTip("Title")} onMouseLeave={() => setToolTip(null)}>
+                    <i className="fa-solid fa-box"></i>
+                    <input
+                      type="text"
+                      placeholder="Product Title"
+                      value={editingProduct.title}
+                      onChange={(e) =>
+                        setEditingProduct({ ...editingProduct, title: e.target.value })
+                      }
+                    />
+                  </div>
                   {toolTip === "Title" && (
-                    <small className="input-tootip">Enter title here</small>
+                    <small>Enter title here</small>
                   )}
                 </div>
-
                 {/* Subtitle */}
-                <div className="input-group" onMouseEnter={() => setToolTip("Subtitle")} onMouseLeave={() => setToolTip(null)}>
-                  <i className="fa-solid fa-pen-to-square"></i>
-                  <input
-                    type="text"
-                    placeholder="Subtitle"
-                    value={editingProduct.subtitle}
-                    onChange={(e) =>
-                      setEditingProduct({ ...editingProduct, subtitle: e.target.value })
-                    }
-                  />
-                   {toolTip === "Subtitle" && (
-                    <small className="input-tootip">Enter subtitle here</small>
+                <div className="input-tootip">
+                  <div className="input-group" onMouseEnter={() => setToolTip("Subtitle")} onMouseLeave={() => setToolTip(null)}>
+                    <i className="fa-solid fa-pen-to-square"></i>
+                    <input
+                      type="text"
+                      placeholder="Subtitle"
+                      value={editingProduct.subtitle}
+                      onChange={(e) =>
+                        setEditingProduct({ ...editingProduct, subtitle: e.target.value })
+                      }
+                    />
+                  </div>
+                  {toolTip === "Subtitle" && (
+                    <small>Enter subtitle here</small>
                   )}
                 </div>
               </div>
               {/* Description */}
-              <div className="input-group" onMouseEnter={() => setToolTip("Description")} onMouseLeave={() => setToolTip(null)}>
-                <i className="fa-solid fa-align-left"></i>
-                <textarea
-                  placeholder="Description"
-                  value={editingProduct.description}
-                  onChange={(e) =>
-                    setEditingProduct({
-                      ...editingProduct,
-                      description: e.target.value,
-                    })
-                  }
-                />
-                {toolTip === "Description" && (
-                    <small className="input-tootip" style={{top:80}}>Enter description here</small>
-                  )}
-              </div>
-
-              {/* Price & Discount */}
-              <div className="two-col">
-                <div className="input-group" onMouseEnter={() => setToolTip("Actual Price")} onMouseLeave={() => setToolTip(null)}>
-                  <i className="fa-solid fa-dollar-sign"></i>
-                  <input
-                    type="number"
-                    placeholder="Price"
-                    value={editingProduct.price}
+              <div className="input-tootip" style={{ height: '140px' }}>
+                <div className="input-group" onMouseEnter={() => setToolTip("Description")} onMouseLeave={() => setToolTip(null)}>
+                  <i className="fa-solid fa-align-left"></i>
+                  <textarea
+                    rows={7}
+                    style={{ resize: 'none' }}
+                    placeholder="Description"
+                    value={editingProduct.description}
                     onChange={(e) =>
                       setEditingProduct({
                         ...editingProduct,
-                        price: Number(e.target.value),
+                        description: e.target.value,
                       })
                     }
                   />
+                </div>
+                {toolTip === "Description" && (
+                  <small>Enter description here</small>
+                )}
+              </div>
+              {/* Price & Discount */}
+              <div className="two-col" style={{ marginTop: 30 }}>
+                <div className="input-tootip">
+                  <div className="input-group" onMouseEnter={() => setToolTip("Actual Price")} onMouseLeave={() => setToolTip(null)}>
+                    <i className="fa-solid fa-dollar-sign"></i>
+                    <input
+                      type="number"
+                      placeholder="Price"
+                      value={editingProduct.price}
+                      onChange={(e) =>
+                        setEditingProduct({
+                          ...editingProduct,
+                          price: Number(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
                   {toolTip === "Actual Price" && (
-                    <small className="input-tootip">Enter actual price here</small>
+                    <small>Enter actual price here</small>
                   )}
                 </div>
-                <div className="input-group" onMouseEnter={() => setToolTip("Discounted Price")} onMouseLeave={() => setToolTip(null)}>
-                  <i className="fa-solid fa-dollar-sign"></i>
-                  <input
-                    type="number"
-                    placeholder="Discount Price"
-                    value={editingProduct.discountPrice || ""}
-                    onChange={(e) =>
-                      setEditingProduct({
-                        ...editingProduct,
-                        discountPrice: Number(e.target.value),
-                      })
-                    }
-                  />
+                <div className="input-tootip">
+                  <div className="input-group" onMouseEnter={() => setToolTip("Discounted Price")} onMouseLeave={() => setToolTip(null)}>
+                    <i className="fa-solid fa-dollar-sign"></i>
+                    <input
+                      type="number"
+                      placeholder="Discount Price"
+                      value={editingProduct.discountPrice || ""}
+                      onChange={(e) =>
+                        setEditingProduct({
+                          ...editingProduct,
+                          discountPrice: Number(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
                   {toolTip === "Discounted Price" && (
-                    <small className="input-tootip">Enter discounted price here</small>
+                    <small>Enter discounted price here</small>
                   )}
                 </div>
               </div>
 
               {/* Ribbon */}
-              <div className="input-group" onMouseEnter={() => setToolTip("Ribbon")} onMouseLeave={() => setToolTip(null)}>
-                <i className="fa-solid fa-ribbon"></i>
-                <input
-                  type="text"
-                  placeholder="Ribbon (e.g. New, Sale)"
-                  value={editingProduct.ribbon}
-                  onChange={(e) =>
-                    setEditingProduct({ ...editingProduct, ribbon: e.target.value })
-                  }
-                />
+              <div className="input-tootip">
+                <div className="input-group" onMouseEnter={() => setToolTip("Ribbon")} onMouseLeave={() => setToolTip(null)}>
+                  <i className="fa-solid fa-ribbon"></i>
+                  <input
+                    type="text"
+                    placeholder="Ribbon (e.g. New, Sale)"
+                    value={editingProduct.ribbon}
+                    onChange={(e) =>
+                      setEditingProduct({ ...editingProduct, ribbon: e.target.value })
+                    }
+                  />
+                </div>
                 {toolTip === "Ribbon" && (
-                    <small className="input-tootip">Enter Ribbon here. If product is not in stock please write Out of Stock.</small>
-                  )}
+                  <small>Enter Ribbon here. If product is not in stock please write Out of Stock.</small>
+                )}
               </div>
 
               {/* Weight */}
-              <div className="input-group" onMouseEnter={() => setToolTip("Weight")} onMouseLeave={() => setToolTip(null)}>
-                <i className="fa-solid fa-weight-hanging"></i>
-                <input
-                  type="text"
-                  placeholder="Weight (g)"
-                  value={editingProduct.weight}
-                  onChange={(e) =>
-                    setEditingProduct({ ...editingProduct, weight: e.target.value })
-                  }
-                />
+              <div className="input-tootip" style={{ marginBottom: 30 }}>
+                <div className="input-group" onMouseEnter={() => setToolTip("Weight")} onMouseLeave={() => setToolTip(null)}>
+                  <i className="fa-solid fa-weight-hanging"></i>
+                  <input
+                    type="text"
+                    placeholder="Weight (g)"
+                    value={editingProduct.weight}
+                    onChange={(e) =>
+                      setEditingProduct({ ...editingProduct, weight: e.target.value })
+                    }
+                  />
+                </div>
                 {toolTip === "Weight" && (
-                    <small className="input-tootip">Enter product weight here in gms.</small>
-                  )}
+                  <small>Enter product weight here in gms.</small>
+                )}
               </div>
 
               {/* Drop Zone */}
@@ -570,7 +574,7 @@ export default function Products() {
                 onDragOver={handleDragOver}
               >
                 <p>📁 Drag & drop product images or click to upload</p>
-                <input type="file" accept="image/*" onChange={handleFileSelect} hidden />
+                <input type="file" accept="image/*" multiple onChange={handleFileSelect} hidden />
                 {uploadProgress > 0 && (
                   <div className="progress-bar">
                     <div className="progress" style={{ width: `${uploadProgress}%` }} />

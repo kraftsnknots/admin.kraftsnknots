@@ -14,7 +14,8 @@ import {
 import storage from "redux-persist/lib/storage";
 
 import authReducer from "./features/authSlice";
-import dashboardReducer from "./features/dashboardSlice"; // ✅ new
+import dashboardReducer from "./features/dashboardSlice";
+import productReducer from "./features/productSlice";
 
 const persistConfig = {
   key: "root",
@@ -24,7 +25,8 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  dashboard: dashboardReducer, // ✅ added
+  dashboard: dashboardReducer,
+  products: productReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

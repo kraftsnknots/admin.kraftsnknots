@@ -10,6 +10,7 @@ import ProductSkeleton from "../components/ProductSkeleton";
 import { useSidebar } from "../context/SidebarContext";
 import Swal from "sweetalert2";
 import Details from "../assets/icons/details.png";
+import TopBar from "../components/TopBar";
 
 export default function CustomerQueries() {
   const [isOpen, setIsOpen] = useState(false);
@@ -167,28 +168,19 @@ export default function CustomerQueries() {
 
       <section className={`mainsection ${collapsed ? "collapsed" : ""}`}>
         <div className="tables-section">
-          <div className="top-bar">
-            <input
-              type="text"
-              placeholder="🔍 Search by name, email, or phone..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <div className="filter-sort filter-sort-queries">
-              <select value={sort} onChange={(e) => setSort(e.target.value)}>
-                <option>Most Recent</option>
-                <option>Oldest First</option>
-              </select>
-              {selectedIds.length > 0 && (<>
-                <button className="delete-selected-btn query-del-btn" onClick={() => handleDelete(selectedIds)} >
-                  <small><i className="fa-solid fa-trash"></i> Delete</small>
-                  <small>({selectedIds.length})</small>
-                </button>
-              </>
-              )}
-            </div>
-          </div>
-
+          <TopBar
+            search={search}
+            inpchange={(e) => setSearch(e.target.value)}
+            sort={sort}
+            selchange={(e) => setSort(e.target.value)}
+            delete={() => handleDelete(selectedIds)}
+            length={selectedIds.length}
+            addwidth="20%"
+            delwidth="25%"
+            data={selectedIds.length}
+            display="none"
+            page="queries"
+          />
           <table className="product-table">
             <thead>
               <tr>
@@ -203,7 +195,7 @@ export default function CustomerQueries() {
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Received At</th>
-                <th style={{textAlign:'center'}}>Actions</th>
+                <th style={{ textAlign: 'center' }}>Actions</th>
               </tr>
             </thead>
 
@@ -221,7 +213,7 @@ export default function CustomerQueries() {
                   <td>{q.email}</td>
                   <td>{q.phone}</td>
                   <td>{q.createdAt}</td>
-                  <td style={{textAlign:'center'}}>
+                  <td style={{ textAlign: 'center' }}>
                     <button onClick={() => handleView(q)} className="query-view-btn">
                       <img src={Details} alt="👁️" />
                     </button>
