@@ -14,7 +14,7 @@ export const OrdersProvider = ({ children }) => {
   // ✅ Initialize from localStorage or default to 'pending'
   const [orderType, setOrderTypeState] = useState(() => {
     const saved = localStorage.getItem('orderType');
-    return saved || 'pending';
+    return saved || 'processing';
   });
 
   // ✅ Sync to localStorage whenever orderType changes

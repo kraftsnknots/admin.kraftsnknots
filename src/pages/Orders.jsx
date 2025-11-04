@@ -18,7 +18,6 @@ const Orders = () => {
     const [isOpen, setIsOpen] = React.useState(false);
     const toggleSidebar = () => setIsOpen(!isOpen);
 
-    console.log(orderType);
 
     return (
         <div className="orders-container">

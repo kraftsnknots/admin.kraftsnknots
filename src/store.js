@@ -43,19 +43,20 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [
-          FLUSH,
-          REHYDRATE,
-          PAUSE,
-          PERSIST,
-          PURGE,
-          REGISTER,
-          'products/uploadImages/pending',
-          'products/uploadImages/fulfilled',
-        ],
-        ignoredPaths: ['products.editingProduct', 'products.addingProduct'],
-      },
+      serializableCheck: false
+      // {
+      //   ignoredActions: [
+      //     FLUSH,
+      //     REHYDRATE,
+      //     PAUSE,
+      //     PERSIST,
+      //     PURGE,
+      //     REGISTER,
+      //     'products/uploadImages/pending',
+      //     'products/uploadImages/fulfilled',
+      //   ],
+      //   ignoredPaths: ['products.editingProduct', 'products.addingProduct'],
+      // },
     }),
 });
 
