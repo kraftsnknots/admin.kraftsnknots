@@ -1,13 +1,18 @@
 .orders-table-container {
   background: #fff;
   border-radius: 12px;
-  overflow: hidden;
+  /* overflow: visible; */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   padding: 10px 0;
   font-family: "Inter", sans-serif;
-  height: 250px;
-}
 
+}
+.order-status{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #000;
+}
 .orders-table {
   width: 100%;
   border-collapse: separate;
@@ -73,7 +78,7 @@
 
 /* ---------- STATUS DROPDOWN ---------- */
 .status-dropdown {
-  position: relative;
+  /* position: static; */
   display: inline-block;
 }
 
@@ -109,6 +114,8 @@
   border-radius: 8px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
   padding: 5px 0;
+  position: fixed;
+  z-index: 99999;
 }
 
 .status-dropdown:hover .dropdown-content {

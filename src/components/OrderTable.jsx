@@ -6,6 +6,7 @@ import { db } from "../config/firebase";
 import { FiFileText } from "react-icons/fi";
 import Swal from "sweetalert2";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import caretDown from "../assets/icons/caret-down-fill.svg";
 
 const storage = getStorage();
 
@@ -194,7 +195,7 @@ const OrdersTable = ({ orderType }) => {
                         {updatingStatus === order.orderNumber ? (
                           <div className="spinner" />
                         ) : (
-                          order.status
+                          <span className="order-status">{order.status} <img src={caretDown} /></span>
                         )}
                       </button>
 
