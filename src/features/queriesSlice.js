@@ -1,41 +1,58 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+// src/features/queriesSlice.js
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  collection,
-  query,
-  orderBy,
-  onSnapshot,
   doc,
   updateDoc,
-} from 'firebase/firestore';
-import { db } from '../config/firebase';
-import Swal from 'sweetalert2';
+  serverTimestamp,
+} from "firebase/firestore";
+import { db } from "../config/firebase";
+import Swal from "sweetalert2";
 
-// Async thunk for deleting queries (marking as deleted)
+// ❗ NEW — Admin Reply Thunk
+export const replyToQuery = createAsyncThunk(
+  "queries/replyToQuery",
+  async ({ id, replyText }, { rejectWithValue }) => {
+    try {
+      await updateDoc(doc(db, "contactFormQueries", id), {
+        adminReply: replyText,
+        adminReplyAt: serverTimestamp(),
+        status: "replied",
+      });
+
+      return { id, replyText };
+    } catch (error) {
+      console.error("Reply failed:", error);
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// ❗ Delete queries thunk
 export const deleteQueries = createAsyncThunk(
-  'queries/deleteQueries',
+  "queries/deleteQueries",
   async (ids, { rejectWithValue }) => {
     try {
       for (const id of ids) {
-        await updateDoc(doc(db, 'mobileAppContactFormQueries', id), {
+        await updateDoc(doc(db, "contactFormQueries", id), {
           deleted: 1,
         });
       }
       return ids;
     } catch (error) {
-      console.error('Error deleting queries:', error);
+      console.error("Error deleting queries:", error);
       return rejectWithValue(error.message);
     }
   }
 );
 
 const queriesSlice = createSlice({
-  name: 'queries',
+  name: "queries",
   initialState: {
     queries: [],
     loading: true,
     error: null,
-    search: '',
-    sort: 'Most Recent',
+    search: "",
+    sort: "Most Recent",
     selectedIds: [],
     selectAll: false,
     selectedQuery: null,
@@ -82,19 +99,43 @@ const queriesSlice = createSlice({
       state.error = null;
     },
   },
+
   extraReducers: (builder) => {
     builder
-      // Delete Queries
+      // ❗ Delete Queries
       .addCase(deleteQueries.fulfilled, (state, action) => {
         state.queries = state.queries.filter(
           (q) => !action.payload.includes(q.id)
         );
         state.selectedIds = [];
         state.selectAll = false;
-        Swal.fire('Deleted!', 'Selected queries were deleted.', 'success');
+        Swal.fire("Deleted!", "Selected queries were deleted.", "success");
       })
-      .addCase(deleteQueries.rejected, (state, action) => {
-        Swal.fire('Error', 'Failed to delete queries.', 'error');
+      .addCase(deleteQueries.rejected, () => {
+        Swal.fire("Error", "Failed to delete queries.", "error");
+      })
+
+      // ❗ Reply To Query Thunk
+      .addCase(replyToQuery.fulfilled, (state, action) => {
+        const { id, replyText } = action.payload;
+
+        const q = state.queries.find((item) => item.id === id);
+        if (q) {
+          q.adminReply = replyText;
+          q.status = "replied";
+          q.adminReplyAt = new Date().toISOString();
+        }
+
+        Swal.fire(
+          "Reply Sent",
+          "Your response has been sent to the customer.",
+          "success"
+        );
+
+        state.selectedQuery = null; // auto-close modal
+      })
+      .addCase(replyToQuery.rejected, () => {
+        Swal.fire("Error", "Failed to send reply.", "error");
       });
   },
 });
