@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../config/firebase";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { auth, db } from "../config/firebase";
 
 const initialState = {
   user: null,
@@ -9,20 +10,52 @@ const initialState = {
   error: null,
 };
 
-// ✅ Async thunk to fetch user profile from Firestore
+/* ============================================================
+   🔥 MAIN ADMIN LOGIN — FIXED
+   This ensures Firebase Auth logs in so Storage rules can work.
+============================================================ */
+export const adminLogin = createAsyncThunk(
+  "auth/adminLogin",
+  async ({ email, password }, { rejectWithValue, dispatch }) => {
+    try {
+      dispatch(loginStart());
+
+      // ✅ Step 1: Login with Firebase Auth
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const uid = cred.user.uid;
+
+      // ✅ Step 2: Load Firestore user profile
+      const snap = await getDoc(doc(db, "users", uid));
+      const profile = snap.exists() ? snap.data() : {};
+
+      const mergedUser = {
+        uid,
+        email: cred.user.email,
+        photoURL: cred.user.photoURL || null,
+        ...profile, // contains "name", "admin":1, etc.
+      };
+
+      dispatch(loginSuccess(mergedUser));
+      return mergedUser;
+    } catch (err) {
+      dispatch(loginFailure(err.message));
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+/* ============================================================
+   Load profile if needed (kept as original)
+============================================================ */
 export const fetchUserProfile = createAsyncThunk(
   "auth/fetchUserProfile",
   async (uid, { rejectWithValue }) => {
     try {
-      const userDoc = await getDoc(doc(db, "users", uid));
-      if (userDoc.exists()) {
-        return userDoc.data();
-      } else {
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
-      return rejectWithValue(error.message);
+      const snap = await getDoc(doc(db, "users", uid));
+      return snap.exists() ? snap.data() : null;
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+      return rejectWithValue(err.message);
     }
   }
 );
@@ -51,7 +84,6 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       state.error = null;
     },
-    // ✅ Update user profile data
     updateUserProfile(state, action) {
       if (state.user) {
         state.user = { ...state.user, ...action.payload };
@@ -60,18 +92,10 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch User Profile
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
         if (action.payload && state.user) {
-          // Merge Firestore data with existing auth data
-          state.user = {
-            ...state.user,
-            ...action.payload,
-          };
+          state.user = { ...state.user, ...action.payload };
         }
-      })
-      .addCase(fetchUserProfile.rejected, (state, action) => {
-        console.error("Failed to fetch user profile:", action.payload);
       });
   },
 });
@@ -84,12 +108,15 @@ export const {
   updateUserProfile,
 } = authSlice.actions;
 
-// ✅ Custom thunk to handle full logout flow
+/* ============================================================
+   🔥 LOGOUT — unchanged but now also logs out Firebase Auth
+============================================================ */
 export const performLogout = () => async (dispatch) => {
   try {
-    dispatch(logout()); // clear auth state
-  } catch (error) {
-    console.error("Error during logout cleanup:", error);
+    await signOut(auth); // <-- THIS IS REQUIRED
+    dispatch(logout());
+  } catch (err) {
+    console.error("Logout error:", err);
   }
 };
 

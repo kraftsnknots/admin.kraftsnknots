@@ -6,7 +6,7 @@ import ProtectedRoute from './ProtectedRoute';
 import CustomerQueries from "./pages/CustomerQueries"
 import { SidebarProvider } from "./context/SidebarContext";
 import { OrdersProvider } from './context/OrdersContext';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginPage from './pages/LoginPage'
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';

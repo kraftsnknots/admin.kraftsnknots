@@ -1,100 +1,106 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Navbar, Nav, Dropdown, Button, Container, Image } from "react-bootstrap";
 import { performLogout } from "../features/authSlice";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
+
 import hamburgerMenu from "../assets/icons/burger-menu-left.svg";
 import cross from "../assets/icons/cross.png";
 import profilePicture from "../assets/icons/dummy_profile_picture.png";
 import Logo from "../assets/images/logo.png";
+
 import { FaUser, FaSignOutAlt } from "react-icons/fa";
 import "./styles/header.css";
 
 const Header = ({ toggleSidebar }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const dropdownRef = useRef(null);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // 🔥 Grab user info from Redux store
+  // Redux user
   const user = useSelector((state) => state.auth.user);
-  
-  // ✅ Use name from Firestore, fallback to email
+
   const username = user?.name || user?.displayName || user?.email || "Guest";
-  
-  // ✅ Use photoURL from Firestore if available
   const userPhoto = user?.photoURL || profilePicture;
 
-  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
-
-  // ✅ Toggle both sidebar + icon state
+  // Mobile menu toggle
   const handleMenuClick = () => {
     toggleSidebar();
     setIsMenuOpen((prev) => !prev);
   };
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Handle logout
   const handleLogout = async () => {
     try {
       await signOut(auth);
       dispatch(performLogout());
       navigate("/");
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error("Logout Error:", error);
     }
   };
 
   return (
-    <header className="topbar">
-      <button className="mobile-menu-btn" onClick={handleMenuClick}>
-        <img
-          src={isMenuOpen ? cross : hamburgerMenu}
-          alt="menu-toggle"
-          className="mobile-menu"
-        />
-      </button>
+    <Navbar bg="white" expand="lg" className="topbar">
+      <Container fluid className="d-flex justify-content-between">
 
-      <div className="logo">
-        <img src={Logo} alt="Ujaas Logo" />
-      </div>
+        {/* Mobile Menu Button */}
+        <Button variant="light" className="d-lg-none p-1" onClick={handleMenuClick}>
+          <img
+            src={isMenuOpen ? cross : hamburgerMenu}
+            alt="menu-toggle"
+            width="28"
+            height="28"
+          />
+        </Button>
 
-      <div className="profiler" ref={dropdownRef}>
-        <img
-          src={userPhoto}
-          alt="User"
-          className="profile-img"
-          onClick={toggleDropdown}
-        />
+        {/* Logo */}
+        <Navbar.Brand className="ms-2 logo">
+          <img
+            src={Logo}
+            alt="Ujaas Logo"
+            style={{ objectFit: "contain" }}
+          />
+        </Navbar.Brand>
 
-        {isDropdownOpen && (
-          <div className="dropdown-menu">
-            <p className="dropdown-hello">👋 Hello, {username}</p>
-            <hr />
-            <button className="dropdown-item">
-              <FaUser className="dropdown-icon" />
-              Profile
-            </button>
-            <button className="dropdown-item logout" onClick={handleLogout}>
-              <FaSignOutAlt className="dropdown-icon" />
-              Logout
-            </button>
-          </div>
-        )}
-      </div>
-    </header>
+        <Nav className="ms-auto align-items-center">
+
+          {/* Profile Dropdown */}
+          <Dropdown align="end">
+            <Dropdown.Toggle
+              variant="link"
+              id="profile-dropdown"
+              className="p-0 border-0 bg-transparent"
+            >
+              <Image
+                src={userPhoto}
+                width="40"
+                height="40"
+                className="profile-img"
+              />
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <div className="px-3 py-2">
+                <strong style={{fontSize:13}}>👋 Hello, {username}</strong>
+              </div>
+
+              <Dropdown.Divider />
+
+              <Dropdown.Item>
+                <FaUser className="me-2" /> Profile
+              </Dropdown.Item>
+
+              <Dropdown.Item className="text-danger" onClick={handleLogout}>
+                <FaSignOutAlt className="me-2" /> Logout
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </Nav>
+      </Container>
+    </Navbar>
   );
 };
 
