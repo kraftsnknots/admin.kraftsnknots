@@ -8,7 +8,7 @@ import { BrowserRouter } from 'react-router-dom';
 import AuthListener from './components/AuthListener';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <BrowserRouter basename="/Admin.UjaasAroma/">
+  <BrowserRouter basename="/admin.kraftsnknots/">
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <AuthListener />

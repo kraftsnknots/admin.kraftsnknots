@@ -20,19 +20,22 @@ export const adminLogin = createAsyncThunk(
     try {
       dispatch(loginStart());
 
-      // ✅ Step 1: Login with Firebase Auth
       const cred = await signInWithEmailAndPassword(auth, email, password);
       const uid = cred.user.uid;
 
-      // ✅ Step 2: Load Firestore user profile
       const snap = await getDoc(doc(db, "users", uid));
-      const profile = snap.exists() ? snap.data() : {};
+      
+      if (!snap.exists() || snap.data().admin !== true) {
+        await signOut(auth);
+        throw new Error("Access denied. Admin only.");
+      }
+
+      const profile = snap.data();
 
       const mergedUser = {
         uid,
         email: cred.user.email,
-        photoURL: cred.user.photoURL || null,
-        ...profile, // contains "name", "admin":1, etc.
+        ...profile
       };
 
       dispatch(loginSuccess(mergedUser));
@@ -43,6 +46,7 @@ export const adminLogin = createAsyncThunk(
     }
   }
 );
+
 
 /* ============================================================
    Load profile if needed (kept as original)

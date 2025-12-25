@@ -40,69 +40,89 @@ const Dashboard = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const toggleSidebar = () => setIsOpen(!isOpen);
 
+  const { user, isLoggedIn } = useSelector((state) => state.auth);
+
   useEffect(() => {
+    // ⛔ DO NOT run listeners until admin is confirmed
+    if (!isLoggedIn || !user?.admin) return;
+
     dispatch(setLoading(true));
 
-    // 🔥 Real-time listeners
     const unsubFns = [];
 
     // 🧍 Non-admin users
-    const userQuery = query(collection(db, "users"), where("admin", "==", 0));
+    const userQuery = query(collection(db, "users"), where("admin", "==", false));
     unsubFns.push(
-      onSnapshot(userQuery, (snapshot) =>
-        dispatch(setTotalUsers(snapshot.size))
+      onSnapshot(
+        userQuery,
+        (snapshot) => dispatch(setTotalUsers(snapshot.size)),
+        (error) => console.error("Users listener error:", error)
       )
     );
 
     // 🛡️ Admin users
-    const adminQuery = query(collection(db, "users"), where("admin", "==", 1));
+    const adminQuery = query(collection(db, "users"), where("admin", "==", true));
     unsubFns.push(
-      onSnapshot(adminQuery, (snapshot) =>
-        dispatch(setAdminUsers(snapshot.size))
+      onSnapshot(
+        adminQuery,
+        (snapshot) => dispatch(setAdminUsers(snapshot.size)),
+        (error) => console.error("Admin users listener error:", error)
       )
     );
 
-    // 🎁 Total products
+    // 🎁 Products
     unsubFns.push(
-      onSnapshot(collection(db, "products"), (snapshot) =>
-        dispatch(setTotalProducts(snapshot.size))
+      onSnapshot(
+        collection(db, "products"),
+        (snapshot) => dispatch(setTotalProducts(snapshot.size)),
+        (error) => console.error("Products listener error:", error)
       )
     );
 
-    // ✅ Success orders
+    // ✅ Success orders (admin only)
     unsubFns.push(
-      onSnapshot(collection(db, "successOrders"), (snapshot) =>
-        dispatch(setSuccessOrders(snapshot.size))
+      onSnapshot(
+        collection(db, "successOrders"),
+        (snapshot) => dispatch(setSuccessOrders(snapshot.size)),
+        (error) => console.error("Success orders listener error:", error)
       )
     );
 
-    // ❌ Failed orders
+    // ❌ Failed orders (admin only)
     unsubFns.push(
-      onSnapshot(collection(db, "failedOrders"), (snapshot) =>
-        dispatch(setFailedOrders(snapshot.size))
+      onSnapshot(
+        collection(db, "failedOrders"),
+        (snapshot) => dispatch(setFailedOrders(snapshot.size)),
+        (error) => console.error("Failed orders listener error:", error)
       )
     );
 
-    // 🎟️ Discount codes
+    // 🎟️ Discount codes (admin only)
     unsubFns.push(
-      onSnapshot(collection(db, "discountCodes"), (snapshot) =>
-        dispatch(setDiscountCodes(snapshot.size))
+      onSnapshot(
+        collection(db, "discountCodes"),
+        (snapshot) => dispatch(setDiscountCodes(snapshot.size)),
+        (error) => console.error("Discount codes listener error:", error)
       )
     );
 
-    // 📩 Mobile queries
+    // 📩 Mobile queries (admin only)
     unsubFns.push(
-      onSnapshot(collection(db, "mobileAppContactFormQueries"), (snapshot) =>
-        dispatch(setMobileQueries(snapshot.size))
+      onSnapshot(
+        collection(db, "contactFormQueries"),
+        (snapshot) => dispatch(setMobileQueries(snapshot.size)),
+        (error) => console.error("Mobile queries listener error:", error)
       )
     );
 
-    // 🧹 Cleanup
+    dispatch(setLoading(false));
+
     return () => {
       unsubFns.forEach((fn) => fn && fn());
       dispatch(resetDashboard());
     };
-  }, [dispatch]);
+  }, [dispatch, isLoggedIn, user?.admin]);
+
 
   return (
     <div className="dashboard-container">
@@ -115,7 +135,7 @@ const Dashboard = () => {
       <section
         className={`mainsection ${collapsed ? "collapsed" : ""}`}>
         <div className="section">
-          {/* 🛡️ Admin Users */} 
+          {/* 🛡️ Admin Users */}
           {loading ? (
             <MoneyCardSkeleton />
           ) : (

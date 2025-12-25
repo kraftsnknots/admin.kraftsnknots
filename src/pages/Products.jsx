@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   collection,
@@ -43,6 +43,7 @@ import {
 } from "../features/productsSlice";
 import { loginSuccess, logout } from "../features/authSlice";
 import { toggleSidebar as toggleSidebarAction } from "../features/uiSlice";
+import ImageCropperModal from "../components/ImageCropperModal";
 
 export default function Products() {
   const navigate = useNavigate();
@@ -67,8 +68,14 @@ export default function Products() {
     draggingIndex,
   } = useSelector((state) => state.products);
 
-  const { user, isLoggedIn } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const { isOpen } = useSelector((state) => state.ui);
+
+  const [cropQueue, setCropQueue] = useState([]); // original files
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [croppedImages, setCroppedImages] = useState([]); // blobs/files
+  const [showCropper, setShowCropper] = useState(false);
+
 
   // ✅ Sync Firebase Auth user
   useEffect(() => {
@@ -191,57 +198,42 @@ export default function Products() {
     if (files.length) handleFileSelect({ target: { files } });
   };
 
-  const handleFileSelect = async (e) => {
+
+
+  const handleFileSelect = (e) => {
     const files = Array.from(e.target.files).slice(0, 5);
     if (!files.length) return;
 
-    const currentProduct = editingProduct || addingProduct;
-    const remainingSlots = 5 - (currentProduct?.images?.length || 0);
-    const filesToUpload = files.slice(0, remainingSlots);
+    setCropQueue(files);
+    setCurrentIndex(0);
+    setCroppedImages([]);
+    setShowCropper(true);
+  };
 
-    // Show progress modal
-    Swal.fire({
-      title: "Uploading images...",
-      html: `<div id="upload-progress-text">0%</div>`,
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading(),
-      customClass: { popup: "swal-popup-top" },
-    });
+  const handleCroppedImage = async (file) => {
+    const updated = [...croppedImages, file];
+    setCroppedImages(updated);
 
-    const result = await dispatch(uploadImages({ files: filesToUpload, user }));
+    if (currentIndex < cropQueue.length - 1) {
+      setCurrentIndex((i) => i + 1);
+    } else {
+      setShowCropper(false);
 
-    if (result.payload) {
-      dispatch(
-        addImagesToProduct({
-          urls: result.payload,
-          isEditing: !!editingProduct,
-        })
-      );
-    }
+      // 🔥 upload all cropped images
+      const result = await dispatch(uploadImages({ files: updated, user }));
 
-    Swal.close();
-
-    if (currentProduct?.images?.length >= 5) {
-      let timerInterval;
-      Swal.fire({
-        title: "Maximum 5",
-        html: "You are not allowed to upload more than 5 images.",
-        timer: 3000,
-        icon: "error",
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading();
-          const timer = Swal.getPopup().querySelector("b");
-          timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-          }, 100);
-        },
-        willClose: () => {
-          clearInterval(timerInterval);
-        },
-      });
+      if (result.payload) {
+        dispatch(
+          addImagesToProduct({
+            urls: result.payload,
+            isEditing: !!editingProduct,
+          })
+        );
+      }
     }
   };
+
+
 
   const handleImageDelete = async (url) => {
     const result = await Swal.fire({
@@ -464,6 +456,16 @@ export default function Products() {
         </div>
       </section>
       <Footer />
+
+      {showCropper && cropQueue[currentIndex] && (
+        <ImageCropperModal
+          file={cropQueue[currentIndex]}
+          isLast={currentIndex === cropQueue.length - 1}
+          onCancel={() => setShowCropper(false)}
+          onCropped={handleCroppedImage}
+        />
+      )}
+
 
       {/* ✏️ Edit Modal */}
       {editingProduct && (
@@ -927,5 +929,6 @@ export default function Products() {
         </div>
       )}
     </div>
+
   );
 }

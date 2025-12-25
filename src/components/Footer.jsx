@@ -19,7 +19,7 @@ const Footer = () => {
     };
     return (
         <footer className="footer">
-            <div className="footer-text">© Ujaas Aroma Inc. All rights reserved 2026.</div>
+            <div className="footer-text">© Rudra Enterprises. All rights reserved 2026.</div>
             <div onClick={handleLogout} className="footer-btn" >
                 <i className="fa-solid fa-right-from-bracket" style={{ fontSize: 20, color: 'red' }}></i>
             </div>

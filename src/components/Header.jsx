@@ -9,10 +9,11 @@ import { auth } from "../config/firebase";
 import hamburgerMenu from "../assets/icons/burger-menu-left.svg";
 import cross from "../assets/icons/cross.png";
 import profilePicture from "../assets/icons/dummy_profile_picture.png";
-import Logo from "../assets/images/logo.png";
 
 import { FaUser, FaSignOutAlt } from "react-icons/fa";
 import "./styles/header.css";
+
+const logo = "https://firebasestorage.googleapis.com/v0/b/kraftsnknots-921a0.firebasestorage.app/o/logos%2Fknklogo2.png?alt=media&token=e3ba6239-845d-4d11-9976-120790ca53e3";
 
 const Header = ({ toggleSidebar }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -59,8 +60,8 @@ const Header = ({ toggleSidebar }) => {
         {/* Logo */}
         <Navbar.Brand className="ms-2 logo">
           <img
-            src={Logo}
-            alt="Ujaas Logo"
+            src={logo}
+            alt="Krafts & Knots Logo"
             style={{ objectFit: "contain" }}
           />
         </Navbar.Brand>
